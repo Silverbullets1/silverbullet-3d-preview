@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silverbullet — Premium Configs, Combos & Tools</title>
+<style>
+/* ═══════════ DRAGONFLY-STYLE CLONE — SILVERBULLET ═══════════
+   Faithful to dragonfly.xyz: dark, editorial, serif + mono,
+   numbered sections, WebGL canvas bg, monogram footer. */
+
+:root {
+  --bg: #050505;
+  --fg: #f2f2f0;
+  --grey: #8a8a86;
+  --line: rgba(242,242,240,0.14);
+  --serif: 'Times New Roman', 'Georgia', 'Cormorant Garamond', serif;
+  --mono: 'Courier New', 'SF Mono', monospace;
+  --sans: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--serif); font-weight:300;
+  overflow-x:hidden; min-height:100vh; opacity:0;
+  transition:opacity .8s ease;
+}
+body.ready { opacity:1; }
+
+/* ── WebGL canvas bg ── */
+#df-bg { position:fixed; inset:0; z-index:0; width:100%; height:100%; display:block; }
+
+/* ── Top nav ── */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 5vw;
+  mix-blend-mode:difference;
+}
+.nav-logo { font-family:var(--mono); font-size:13px; letter-spacing:2px; text-decoration:none; color:var(--fg); }
+.nav-logo b { font-weight:400; }
+.nav-links { display:flex; gap:2.2rem; }
+.nav-links a { font-family:var(--mono); font-size:11px; letter-spacing:.5px; text-decoration:none; color:var(--fg); opacity:.75; transition:opacity .2s; }
+.nav-links a:hover { opacity:1; }
+
+/* ── Hero (like dragonfly's 01 About) ── */
+.hero {
+  position:relative; z-index:2;
+  min-height:100vh; display:flex; flex-direction:column;
+  justify-content:center; padding:0 5vw;
+}
+.hero .kick { font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--grey); margin-bottom:3rem; text-transform:uppercase; }
+.hero h1 {
+  font-family:var(--serif); font-weight:300;
+  font-size:clamp(44px, 8vw, 130px);
+  line-height:.95; letter-spacing:-.02em;
+  max-width:14ch;
+}
+.hero h1 em { font-style:italic; color:var(--grey); }
+.hero .sub { margin-top:3rem; max-width:44ch; font-size:clamp(18px,2vw,24px); line-height:1.4; letter-spacing:-.02em; color:var(--grey); }
+.hero .sub b { color:var(--fg); font-weight:300; }
+
+/* ── Sections ── */
+section.block { position:relative; z-index:2; padding:180px 5vw; }
+.section-head { display:flex; align-items:baseline; gap:2rem; margin-bottom:5rem; border-top:1px solid var(--line); padding-top:2rem; }
+.section-num { font-family:var(--mono); font-size:11px; letter-spacing:2px; color:var(--grey); }
+.section-title { font-family:var(--mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--fg); }
+.section-title b { font-weight:400; }
+
+/* Big statement */
+.statement { font-family:var(--serif); font-weight:300; font-size:clamp(28px,4vw,56px); line-height:1.1; letter-spacing:-.015em; max-width:24ch; }
+.statement .dim { color:var(--grey); font-style:italic; }
+
+/* Editorial rows (like dragonfly article list) */
+.rows { display:flex; flex-direction:column; }
+.row {
+  display:flex; align-items:center; justify-content:space-between; gap:2rem;
+  padding:34px 0; border-bottom:1px solid var(--line);
+  cursor:pointer; transition:background .35s var(--ease), padding .35s;
+  text-decoration:none; color:var(--fg);
+}
+.row:hover { background:var(--fg); color:var(--bg); padding-left:24px; padding-right:24px; }
+.row:hover .row-cat, .row:hover .row-arrow { color:var(--bg); opacity:.6; }
+.row-cat { font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--grey); min-width:110px; }
+.row-title { font-family:var(--serif); font-size:clamp(20px,3vw,40px); font-weight:300; letter-spacing:-.01em; flex:1; }
+.row-arrow { font-family:var(--mono); font-size:16px; color:var(--grey); transition:transform .3s; }
+.row:hover .row-arrow { transform:translate(6px,-6px); }
+
+/* Stats strip */
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:4rem; }
+.stat { background:var(--bg); padding:40px 28px; }
+.stat .num { font-family:var(--serif); font-size:clamp(36px,5vw,64px); font-weight:300; letter-spacing:-.02em; }
+.stat .lbl { font-family:var(--mono); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--grey); margin-top:8px; }
+
+/* Category tiles (simple like dragonfly portfolio) */
+.tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+.tile { background:var(--bg); padding:36px 28px; text-decoration:none; color:var(--fg); transition:background .3s; }
+.tile:hover { background:var(--fg); color:var(--bg); }
+.tile h3 { font-family:var(--serif); font-size:26px; font-weight:300; margin-bottom:6px; }
+.tile p { font-family:var(--mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--grey); }
+.tile:hover p { color:var(--bg); opacity:.6; }
+
+/* Footer monogram (like dragonfly "L Y") */
+.footer { position:relative; z-index:2; padding:120px 5vw 40px; border-top:1px solid var(--line); }
+.footer-mono {
+  font-family:var(--serif); font-weight:300;
+  font-size:clamp(80px,18vw,240px); line-height:.8;
+  text-align:center; letter-spacing:-.04em; color:var(--bg);
+  -webkit-text-stroke:1px var(--line);
+  user-select:none; pointer-events:none;
+}
+.footer-info { display:flex; justify-content:space-between; flex-wrap:wrap; gap:2rem; margin-top:6rem; font-family:var(--mono); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--grey); }
+.footer-info a { color:var(--grey); text-decoration:none; }
+.footer-info a:hover { color:var(--fg); }
+
+/* Mobile */
+@media (max-width:700px) {
+  .nav-links { display:none; }
+  .hero { padding:0 8vw; }
+  section.block { padding:120px 8vw; }
+  .section-head { gap:1rem; }
+  .row { flex-wrap:wrap; gap:10px; }
+  .row-title { width:100%; order:3; }
+}
+</style>
+</head>
+<body>
+<canvas id="df-bg"></canvas>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="#"><b>SB</b>TL</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#catalog">Catalog</a>
+    <a href="#checkers">Checkers</a>
+    <a href="#combos">Combos</a>
+    <a href="#banks">Banks</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="kick">Premium Configs · Combos · Tools</div>
+  <h1>Untraceable <em>access.</em></h1>
+  <p class="sub"><b>Silverbullet</b> brings working configs, checkers, and country combos to teams that need them — encrypted, warrantied, and delivered on time.</p>
+</header>
+
+<!-- 01 ABOUT -->
+<section class="block" id="about">
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <span class="section-title"><b>About</b></span>
+  </div>
+  <p class="statement">Since day one we've been <span class="dim">quiet.</span> No logs, no names — just products that work, updated weekly, with <span class="dim">warranty on every config.</span></p>
+  <div class="stats">
+    <div class="stat"><div class="num">160+</div><div class="lbl">Products live</div></div>
+    <div class="stat"><div class="num">16</div><div class="lbl">Countries covered</div></div>
+    <div class="stat"><div class="num">2</div><div class="lbl">Payment methods</div></div>
+    <div class="stat"><div class="num">24/7</div><div class="lbl">Dedicated support</div></div>
+  </div>
+</section>
+
+<!-- 02 CATALOG -->
+<section class="block" id="catalog">
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <span class="section-title"><b>Catalog</b></span>
+  </div>
+  <div class="tiles">
+    <a class="tile" href="#combos"><h3>Configs</h3><p>100+ working configs</p></a>
+    <a class="tile" href="#checkers"><h3>Checkers</h3><p>Full capture suite</p></a>
+    <a class="tile" href="#combos"><h3>Combos</h3><p>Country-wise, all domains</p></a>
+    <a class="tile" href="#banks"><h3>Bank Configs</h3><p>30+ institutions</p></a>
+    <a class="tile" href="#contact"><h3>Tools</h3><p>SMTP, API, harvesters</p></a>
+    <a class="tile" href="#contact"><h3>Cloud Access</h3><p>Private member cloud</p></a>
+  </div>
+</section>
+
+<!-- 03 CHECKERS -->
+<section class="block" id="checkers">
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <span class="section-title"><b>Checkers</b></span>
+  </div>
+  <div class="rows">
+    <a class="row" href="#contact"><span class="row-cat">Capture</span><span class="row-title">Valorant, CC, Sam's Club v8.1</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#contact"><span class="row-cat">Cookies</span><span class="row-title">BLTools Cookies Checker v3.0</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#contact"><span class="row-cat">Gift Cards</span><span class="row-title">Apple, Xbox, Starbucks GC Checkers</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#contact"><span class="row-cat">Streaming</span><span class="row-title">Netflix Pro Checker</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#contact"><span class="row-cat">All-in-One</span><span class="row-title">Silverbullet Official Checker v3.0</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#contact"><span class="row-cat">Retail</span><span class="row-title">DSW, Airmiles, Amazon GC, Eneba</span><span class="row-arrow">↗</span></a>
+  </div>
+</section>
+
+<!-- 04 COMBOS -->
+<section class="block" id="combos">
+  <div class="section-head">
+    <span class="section-num">04</span>
+    <span class="section-title"><b>Combos</b></span>
+  </div>
+  <p class="statement">Country-wise data, <span class="dim">all major domains.</span> Email:pass, number:pass, user:pass — pick your lines: <span class="dim">100k · 300k · 1M.</span></p>
+  <div class="rows" style="margin-top:4rem">
+    <div class="row"><span class="row-cat">USA</span><span class="row-title">Comcast, AT&T, SBCGlobal, Cox, Verizon, Gmail</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">Germany</span><span class="row-title">Web.de, GMX, T-Online, Outlook.de, iCloud</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">UK</span><span class="row-title">BT, Sky, Virgin.net, TalkTalk, Yahoo.co.uk</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">India</span><span class="row-title">Rediffmail, Ymail, Hotmail.co.in, Indiatimes</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">+12 more</span><span class="row-title">Canada, France, Brazil, Russia, Australia, Poland…</span><span class="row-arrow">→</span></div>
+  </div>
+</section>
+
+<!-- 05 BANKS -->
+<section class="block" id="banks">
+  <div class="section-head">
+    <span class="section-num">05</span>
+    <span class="section-title"><b>Banks</b></span>
+  </div>
+  <div class="rows">
+    <div class="row"><span class="row-cat">USA</span><span class="row-title">Wells Fargo, Truist, Regions, Axos, MTB</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">Credit Unions</span><span class="row-title">RBFCU, Teachers FCU, Delta CU, Ascend, Vystar</span><span class="row-arrow">→</span></div>
+    <div class="row"><span class="row-cat">Other</span><span class="row-title">Citi Bank, Koho.ca, BendHSA, Glacier</span><span class="row-arrow">→</span></div>
+  </div>
+</section>
+
+<!-- 06 CONTACT -->
+<section class="block" id="contact">
+  <div class="section-head">
+    <span class="section-num">06</span>
+    <span class="section-title"><b>Contact</b></span>
+  </div>
+  <p class="statement">Working on something <span class="dim">sensitive?</span> Reach us encrypted.</p>
+  <div class="rows" style="margin-top:4rem">
+    <a class="row" href="https://t.me/Silverbullets_bot" target="_blank"><span class="row-cat">Telegram</span><span class="row-title">@Silverbullets_bot</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="https://signal.me/#eu/rUUTDoeJ1H-hMMzH655tGBXs4T2fQsJU0rt18UVOsvCEvFaQ6a9Du6scd1P4sH3L" target="_blank"><span class="row-cat">Signal</span><span class="row-title">Signal link</span><span class="row-arrow">↗</span></a>
+    <a class="row" href="#" onclick="return false"><span class="row-cat">PGP</span><span class="row-title">Fingerprint D181…51C0 · public key available</span><span class="row-arrow">→</span></a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-mono">SB</div>
+  <div class="footer-info">
+    <span>☠ Silverbullet Store — est. 2024</span>
+    <span>BTC · XMR accepted</span>
+    <span>No logs · No tracking · Tor only</span>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   WEBGL BACKGROUND — dragonfly-style animated mesh
+   Self-contained (no CDN) — works on Tor.
+   ═══════════════════════════════════════════════ */
+(function () {
+  var canvas = document.getElementById('df-bg');
+  var gl = canvas.getContext('webgl', { antialias:true, alpha:true });
+  if (!gl) { canvas.style.display='none'; return; }
+
+  var W, H, t0 = performance.now();
+  function resize() {
+    W = canvas.width = innerWidth;
+    H = canvas.height = innerHeight;
+    gl.viewport(0,0,W,H);
+  }
+  resize(); addEventListener('resize', resize);
+
+  var vs = 'attribute vec2 p; varying vec2 vUv; void main(){ vUv=p*.5+.5; gl_Position=vec4(p,0.,1.); }';
+  var fs = [
+    'precision highp float;',
+    'varying vec2 vUv; uniform float uT; uniform vec2 uR;',
+    'float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }',
+    'float n(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.-2.*f);',
+    ' return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y); }',
+    'float fbm(vec2 p){ float v=0.; float a=.5; for(int i=0;i<5;i++){ v+=a*n(p); p*=2.03; a*=.55; } return v; }',
+    'void main(){',
+    ' vec2 uv=vUv; vec2 p=uv*vec2(uR.x/uR.y,1.);',
+    ' float t=uT*.06;',
+    ' float n1=fbm(p*1.7+vec2(t,-t*.7));',
+    ' float n2=fbm(p*2.3-vec2(t*1.3,t*.5)+n1*1.4);',
+    ' float n3=fbm(p*3.6+vec2(-t*.6,t*.9)+n2*1.2);',
+    ' vec3 cA=vec3(.02,.02,.022);',
+    ' vec3 cB=vec3(.04,.06,.05);',
+    ' vec3 cC=vec3(.03,.11,.08);',
+    ' float m1=smoothstep(.35,.8,n1);',
+    ' float m2=smoothstep(.45,.85,n2);',
+    ' float m3=smoothstep(.5,.9,n3);',
+    ' vec3 col=mix(cA,cB,m1);',
+    ' col=mix(col,cC,m2*.7);',
+    ' col+=cC*m3*.35;',
+    ' float vig=1.-smoothstep(.5,1.3,length(uv-.5)*1.7);',
+    ' col*=vig;',
+    ' float g=h(uv*uR+fract(uT));',
+    ' col+=(g-.5)*.02;',
+    ' gl_FragColor=vec4(col,1.);',
+    '}'
+  ].join('\n');
+
+  function sh(type, src){ var s=gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s); return s; }
+  var prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog); gl.useProgram(prog);
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(prog,'p');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  var uT = gl.getUniformLocation(prog,'uT');
+  var uR = gl.getUniformLocation(prog,'uR');
+
+  (function frame(now){
+    gl.uniform1f(uT,(now-t0)/1000);
+    gl.uniform2f(uR,W,H);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+    requestAnimationFrame(frame);
+  })(performance.now());
+})();
+
+/* Fade in after fonts/layout settle */
+window.addEventListener('load', function(){ setTimeout(function(){ document.body.classList.add('ready'); }, 200); });
+setTimeout(function(){ document.body.classList.add('ready'); }, 1200);
+</script>
+</body>
+</html>
